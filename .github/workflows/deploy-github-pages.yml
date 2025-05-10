@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch toàn bộ lịch sử để có tất cả các nhánh
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -28,6 +30,8 @@ jobs:
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "GitHub Actions Bot"
+          # Fetch thông tin về tất cả các nhánh từ origin
+          git fetch origin --all --depth=1
           # Tạo worktree cho nhánh gh-pages
           git worktree add --force --detach .gh-pages origin/gh-pages
           # Sao chép build vào worktree
