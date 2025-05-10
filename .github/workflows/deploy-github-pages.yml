@@ -24,14 +24,17 @@ jobs:
       - name: Build
         run: npm run build # hoặc yarn build
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages using worktree
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "GitHub Actions Bot"
-          git checkout --orphan gh-pages
-          git reset --hard
-          # Sử dụng rsync để sao chép chỉ các tệp cần thiết và loại trừ
-          rsync -av --delete --exclude='node_modules' --exclude='.git' build/ .
+          # Tạo worktree cho nhánh gh-pages
+          git worktree add --force --detach .gh-pages origin/gh-pages
+          # Sao chép build vào worktree
+          rsync -av --delete --exclude='node_modules' --exclude='.git' build/ .gh-pages/
+          cd .gh-pages
           git add .
           git commit -m "Deploy to GitHub Pages from GitHub Actions"
-          git push origin --force gh-pages
+          git push origin HEAD:gh-pages --force
+          cd ..
+          git worktree remove --force .gh-pages
