@@ -30,13 +30,18 @@ jobs:
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "GitHub Actions Bot"
-          # Fetch thông tin về tất cả các nhánh từ origin
-          git fetch --depth=1 --all
-          # Tạo worktree cho nhánh gh-pages
-          git worktree add --force --detach .gh-pages origin/gh-pages
-          # Sao chép build vào worktree
-          rsync -av --delete --exclude='node_modules' --exclude='.git' build/ .gh-pages/
-          cd .gh-pages
+          # Kiểm tra xem nhánh gh-pages đã tồn tại chưa, nếu chưa thì tạo
+          git fetch origin gh-pages:gh-pages --depth=1 || git checkout --orphan gh-pages
+          # Tạo worktree cho nhánh gh-pages (nếu chưa tồn tại) hoặc chuyển đến worktree
+          if [ -d ".gh-pages" ]; then
+            cd .gh-pages
+            git checkout gh-pages
+          else
+            git worktree add --force --detach .gh-pages origin/gh-pages
+            cd .gh-pages
+          fi
+          # Sao chép build vào worktree, --delete để xóa các tệp cũ không còn
+          rsync -av --delete --exclude='node_modules' --exclude='.git' ../build/ .
           git add .
           git commit -m "Deploy to GitHub Pages from GitHub Actions"
           git push origin HEAD:gh-pages --force
