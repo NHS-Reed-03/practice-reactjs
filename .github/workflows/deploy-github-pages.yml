@@ -8,7 +8,7 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Thêm phần này để cấp quyền ghi
+      contents: write # Cấp quyền ghi cho GITHUB_TOKEN
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -30,7 +30,8 @@ jobs:
           git config --global user.name "GitHub Actions Bot"
           git checkout --orphan gh-pages
           git reset --hard
-          cp -r build/. .
+          # Sử dụng rsync để sao chép chỉ các tệp cần thiết và loại trừ
+          rsync -av --delete --exclude='node_modules' --exclude='.git' build/ .
           git add .
           git commit -m "Deploy to GitHub Pages from GitHub Actions"
           git push origin --force gh-pages
