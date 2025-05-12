@@ -26,8 +26,14 @@ jobs:
       - name: Build
         run: npm run build # hoặc yarn build
 
-      - name: Deploy to GitHub Pages (hoặc branch khác)
-        uses: JamesIves/github-pages-deploy-action@v4
+      # - name: Deploy to GitHub Pages (hoặc branch khác)
+      #   uses: JamesIves/github-pages-deploy-action@v4
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     branch: gh-pages # Branch bạn muốn deploy code build vào
+      #     folder: build # Thư mục chứa code đã build
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages # Branch bạn muốn deploy code build vào
