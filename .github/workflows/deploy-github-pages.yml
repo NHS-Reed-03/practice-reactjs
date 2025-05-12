@@ -1,19 +1,52 @@
-name: Deploy to GitHub Pages
+# name: Deploy to GitHub Pages
+
+# on:
+#   push:
+#     branches: [main] # Thay 'main' bằng tên nhánh chính của bạn nếu khác (ví dụ: 'master')
+
+# jobs:
+#   build-and-deploy:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: write # Cấp quyền ghi cho GITHUB_TOKEN
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+#         with:
+#           fetch-depth: 0 # Fetch toàn bộ lịch sử để có tất cả các nhánh
+
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: 'lts/*'
+
+#       - name: Install dependencies
+#         run: npm install # hoặc yarn install
+
+#       - name: Build
+#         run: npm run build # hoặc yarn build
+
+#       - name: Deploy to GitHub Pages (hoặc branch khác)
+#         uses: JamesIves/github-pages-deploy-action@v4
+#         with:
+#           token: ${{ secrets.GITHUB_TOKEN }}
+#           branch: gh-pages # Branch bạn muốn deploy code build vào
+#           folder: build # Thư mục chứa code đã build
+
+name: Build and Deploy React App to GitHub Pages
 
 on:
   push:
-    branches: [main] # Thay 'main' bằng tên nhánh chính của bạn nếu khác (ví dụ: 'master')
+    branches:
+      - main
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write # Cấp quyền ghi cho GITHUB_TOKEN
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # Fetch toàn bộ lịch sử để có tất cả các nhánh
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -21,19 +54,13 @@ jobs:
           node-version: 'lts/*'
 
       - name: Install dependencies
-        run: npm install # hoặc yarn install
+        run: npm install
 
-      - name: Build
-        run: npm run build # hoặc yarn build
+      - name: Build React App
+        run: npm run build # Đảm bảo lệnh này tạo ra thư mục 'build' chứa web tĩnh
 
-      # - name: Deploy to GitHub Pages (hoặc branch khác)
-      #   uses: JamesIves/github-pages-deploy-action@v4
-      #   with:
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     branch: gh-pages # Branch bạn muốn deploy code build vào
-      #     folder: build # Thư mục chứa code đã build
-      - name: Deploy
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: build # Trỏ chính xác đến thư mục build
+          publish_dir: ./build # Trỏ chính xác đến thư mục build
