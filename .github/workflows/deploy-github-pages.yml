@@ -35,6 +35,5 @@ jobs:
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: gh-pages # Branch bạn muốn deploy code build vào
-          folder: build # Thư mục chứa code đã build
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build # Trỏ chính xác đến thư mục build
